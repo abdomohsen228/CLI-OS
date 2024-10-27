@@ -1,9 +1,13 @@
 package org.example.Command;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Scanner;
+
 public class Terminal {
     File currentDirectory = new File(System.getProperty("user.dir"));
 
@@ -158,10 +162,120 @@ public class Terminal {
             System.out.println("Invalid Command Arguments!");
         }
     }
+
     // Command 4: list the history of the commands
     public void history(ArrayList<String> arr) {
         for (int i = 0; i < arr.size(); i++) {
             System.out.println((i + 1) + "  " + arr.get(i));
         }
     }
+     // Command: mkdir - creates directories
+    public void mkdir(String[] args) {
+        if (args.length == 0) {
+            System.out.println("Usage: mkdir <directory_name>");
+            return;
+        }
+        for (String dirName : args) {
+            File dir = new File(currentDirectory, dirName);
+            if (dir.exists()) {
+                System.out.println("Directory " + dirName + " already exists!");
+            } else if (dir.mkdirs()) {
+                System.out.println("Directory " + dirName + " created successfully.");
+            } else {
+                System.out.println("Failed to create directory " + dirName + ".");
+            }
+        }
+    }
+
+    // Command: rmdir - removes empty directories
+    public void rmdir(String[] args) {
+        if (args.length == 0) {
+            System.out.println("Usage: rmdir <directory_name>");
+            return;
+        }
+        for (String dirName : args) {
+            File dir = new File(currentDirectory, dirName);
+            if (!dir.exists()) {
+                System.out.println("Directory " + dirName + " does not exist!");
+            } else if (!dir.isDirectory()) {
+                System.out.println(dirName + " is not a directory!");
+            } else if (dir.listFiles() != null && dir.listFiles().length > 0) {
+                System.out.println("Directory " + dirName + " is not empty!");
+            } else if (dir.delete()) {
+                System.out.println("Directory " + dirName + " deleted successfully.");
+            } else {
+                System.out.println("Failed to delete directory " + dirName + ".");
+            }
+        }
+    }
+
+    // Command: rm - removes files
+    public void rm(String[] args) {
+        if (args.length == 0) {
+            System.out.println("Usage: rm <file_name>");
+            return;
+        }
+        for (String fileName : args) {
+            File file = new File(currentDirectory, fileName);
+            if (!file.exists()) {
+                System.out.println("File " + fileName + " does not exist!");
+            } else if (!file.isFile()) {
+                System.out.println(fileName + " is not a file!");
+            } else if (file.delete()) {
+                System.out.println("File " + fileName + " deleted successfully.");
+            } else {
+                System.out.println("Failed to delete file " + fileName + ".");
+            }
+        }
+    }
+
+    // Command: cat - displays or creates files
+    public void cat(String[] args) {
+        if (args.length == 0) {
+            System.out.println("Usage: cat <file_name> [> or >> output_file]");
+            return;
+        }
+
+        // Check for redirection operators ">" or ">>"
+        boolean append;
+        if (args.length > 1 && (args[1].equals(">") || args[1].equals(">>"))) {
+            append = args[1].equals(">>");
+            if (args.length < 3) {
+                System.out.println("Usage for redirection: cat <file_name> > <output_file>");
+                return;
+            }
+            try (Scanner scanner = new Scanner(new File(currentDirectory, args[0]));
+                 FileWriter writer = new FileWriter(new File(currentDirectory, args[2]), append)) {
+                while (scanner.hasNextLine()) {
+                    writer.write(scanner.nextLine() + System.lineSeparator());
+                }
+                System.out.println("File contents successfully redirected to " + args[2]);
+            } catch (FileNotFoundException e) {
+                System.out.println("File " + args[0] + " not found.");
+            } catch (IOException e) {
+                System.out.println("Error writing to " + args[2]);
+            }
+        } else {
+            // Read and display file contents
+            for (String fileName : args) {
+                File file = new File(currentDirectory, fileName);
+                if (!file.exists()) {
+                    System.out.println("File " + fileName + " does not exist!");
+                    continue;
+                }
+                if (!file.isFile()) {
+                    System.out.println(fileName + " is not a file!");
+                    continue;
+                }
+                try (Scanner scanner = new Scanner(file)) {
+                    while (scanner.hasNextLine()) {
+                        System.out.println(scanner.nextLine());
+                    }
+                } catch (FileNotFoundException e) {
+                    System.out.println("Error reading file " + fileName + ".");
+                }
+            }
+        }
+    }
 }
+

@@ -17,6 +17,7 @@ public class Parser {
                 Map.entry("history", true),
                 Map.entry("pwd", true),
                 Map.entry("mkdir", true),
+                Map.entry("rmdir", true),
                 Map.entry("cp", true),
                 Map.entry("cp -r", true),
                 Map.entry("rm", true),

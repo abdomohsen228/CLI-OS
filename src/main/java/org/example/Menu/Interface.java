@@ -38,7 +38,6 @@ public class Interface {
     private void delegateToTerminal(Parser parserObject, String input) throws IOException {
         String commandName = parserObject.getCommandName();
         String[] args = parserObject.getArgs(input);
-
         switch (commandName) {
             case "echo":
 //                terminal.echo(args);
@@ -60,10 +59,13 @@ public class Interface {
                 terminal.history(commandHistory);
                 break;
             case "mkdir":
-//                Terminal.mkdir(args);
+                terminal.mkdir(args);
+                break;
+            case "rmdir":
+                terminal.rmdir(args);
                 break;
             case "cat":
-//                terminal.cat(args);
+                terminal.cat(args);
                 break;
             case "wc":
 //                terminal.wc(args);
@@ -75,7 +77,7 @@ public class Interface {
 //                Terminal.cp_r(args);
                 break;
             case "rm":
-//                terminal.rm(args);
+                terminal.rm(args);
                 break;
             default:
                 System.out.println("Invalid Command!");
