@@ -16,14 +16,15 @@ public class Parser {
                 Map.entry("touch", true),
                 Map.entry("history", true),
                 Map.entry("pwd", true),
+                Map.entry("pwd -L", true),
+                Map.entry("pwd -P", true),
                 Map.entry("mkdir", true),
                 Map.entry("rmdir", true),
                 Map.entry("cp", true),
                 Map.entry("cp -r", true),
                 Map.entry("rm", true),
                 Map.entry("cat", true),
-                Map.entry("wc", true),
-                Map.entry("echo", true)
+                Map.entry("wc", true)
         );
         return validCommands.containsKey(command);
     }
@@ -39,6 +40,11 @@ public class Parser {
         // handling "cp -r" and "ls -r" command
         if ((commandName.equals("cp") || commandName.equals("ls")) && args.length >= 2 && args[1].equals("-r")) {
             commandName += " -r";
+            // remove the first two arguments from the list
+            args = Arrays.copyOfRange(args, 2, args.length);
+        } else if (commandName.equals("pwd") && args.length >= 2 && (args[1].equals("-L")||args[1].equals("-P"))) {
+            commandName += " ";
+            commandName += args[1];
             // remove the first two arguments from the list
             args = Arrays.copyOfRange(args, 2, args.length);
         } else {

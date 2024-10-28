@@ -1,8 +1,9 @@
 package org.example.Command;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -277,5 +278,86 @@ public class Terminal {
             }
         }
     }
+
+    // Command: pwd - displays current working directory
+    public String pwd(String command, String[] args) {
+        Path current = Paths.get("").toAbsolutePath();
+
+        // Check for invalid command
+        if (!(command.equals("pwd") || command.equals("pwd -P") || command.equals("pwd -L"))) {
+            System.out.println("Invalid syntax!");
+            return "Invalid syntax!";
+        }
+        if(command.equals("pwd -P"))
+        {
+            try{
+                current=current.toRealPath();
+                return current.toString();
+            }
+            catch (Exception e)
+            {
+                System.out.println("error with real path! "+e.getMessage());
+                return "error with real path";
+            }
+        }
+
+        // Handle options and output redirection
+        if (args.length > 0) {
+            if (args[0].equals(">")) {
+                Override(current.toString(), args[1]);
+                return "done";
+            } else if (args[0].equals(">>")) {
+                Append(current.toString(), args[1]);
+                return "done";
+            } else {
+                System.out.println("Invalid syntax!");
+                return "invalid syntax";
+            }
+        }
+
+        // No arguments
+        System.out.println(current);
+        return current.toString();
+    }
+
+    // command: > - overrides file's content and creates new one if doesn't exist
+    public void Override(String content, String outputFile) {
+        Path file = Paths.get(outputFile);
+
+        // Check if the path is valid and exists
+        if (file.getParent() != null && !Files.exists(file.getParent())) {
+            System.out.println("Invalid path!");
+            return;
+        }
+
+        // Write to the file
+        try (BufferedWriter writer = Files.newBufferedWriter(file)) {
+            writer.write(content);
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing to the file: " + e.getMessage());
+        }
+    }
+
+    // command: >> - appends the current content to a new file
+    public void Append(String content , String outputFile )
+    {
+        Path file = Paths.get(outputFile);
+
+        // Check if the parent directory exists
+        if (file.getParent() != null && !Files.exists(file.getParent())) {
+            System.out.println("Invalid path!");
+            return;
+        }
+
+        // Append to the file
+        try (BufferedWriter writer = Files.newBufferedWriter(file, StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
+            writer.write(content);
+            writer.newLine();
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing to the file: " + e.getMessage());
+        }
+    }
+
+
 }
 
