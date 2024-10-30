@@ -240,33 +240,34 @@ public class Terminal {
     }
 
     // Command: cat - displays or creates files
-    public void cat(String[] args) {
+public void cat(String[] args) {
         if (args.length == 0) {
             System.out.println("Usage: cat <file_name> [> or >> output_file]");
             return;
         }
 
         // Check for redirection operators ">" or ">>"
-        boolean append;
+        boolean append = false;
         if (args.length > 1 && (args[1].equals(">") || args[1].equals(">>"))) {
-            append = args[1].equals(">>");
+            append = args[1].equals(">>"); // Set to true if '>>' is used
             if (args.length < 3) {
                 System.out.println("Usage for redirection: cat <file_name> > <output_file>");
                 return;
             }
+            // Attempt to open source file and write to destination with specified mode
             try (Scanner scanner = new Scanner(new File(currentDirectory, args[0]));
                  FileWriter writer = new FileWriter(new File(currentDirectory, args[2]), append)) {
                 while (scanner.hasNextLine()) {
                     writer.write(scanner.nextLine() + System.lineSeparator());
                 }
-                System.out.println("File contents successfully redirected to " + args[2]);
+                System.out.println("File contents successfully " + (append ? "appended to " : "redirected to ") + args[2]);
             } catch (FileNotFoundException e) {
                 System.out.println("File " + args[0] + " not found.");
             } catch (IOException e) {
                 System.out.println("Error writing to " + args[2]);
             }
         } else {
-            // Read and display file contents
+            // If no redirection, read and display file contents
             for (String fileName : args) {
                 File file = new File(currentDirectory, fileName);
                 if (!file.exists()) {
@@ -287,7 +288,6 @@ public class Terminal {
             }
         }
     }
-
     // Command: pwd - displays current working directory
     public String pwd(String command, String[] args) {
         Path current = Paths.get("").toAbsolutePath();
