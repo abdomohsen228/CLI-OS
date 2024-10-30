@@ -12,6 +12,15 @@ import java.util.Scanner;
 public class Terminal {
     File currentDirectory = new File(System.getProperty("user.dir"));
 
+    public void setCurrentDirectory(File directory) {
+        this.currentDirectory = directory;
+    }
+
+    public File getCurrentDirectory() {
+        return this.currentDirectory;
+    }
+
+
     // Command 1: lists the contents of the current directory
     // sorted in alphabetical order or reversed
     public void ls(String command, String[] input) {
