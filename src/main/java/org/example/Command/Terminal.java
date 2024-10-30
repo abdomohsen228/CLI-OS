@@ -289,24 +289,25 @@ public class Terminal {
     }
 
     // Command: pwd - displays current working directory
-    public String pwd(String command, String[] args) {
+    public void pwd(String command, String[] args) {
         Path current = Paths.get("").toAbsolutePath();
+//        System.out.println("args are: "+Arrays.toString(args)+"\n");
 
         // Check for invalid command
         if (!(command.equals("pwd") || command.equals("pwd -P") || command.equals("pwd -L"))) {
             System.out.println("Invalid syntax!");
-            return "Invalid syntax!";
+            return ;
         }
         if(command.equals("pwd -P"))
         {
             try{
                 current=current.toRealPath();
-                return current.toString();
+
             }
             catch (Exception e)
             {
                 System.out.println("error with real path! "+e.getMessage());
-                return "error with real path";
+                return ;
             }
         }
 
@@ -314,32 +315,33 @@ public class Terminal {
         if (args.length > 0) {
             if (args[0].equals(">")) {
                 Override(current.toString(), args[1]);
-                return "done";
+                return ;
             } else if (args[0].equals(">>")) {
                 Append(current.toString(), args[1]);
-                return "done";
+                return ;
             } else {
                 System.out.println("Invalid syntax!");
-                return "invalid syntax";
+                return ;
             }
         }
 
         // No arguments
         System.out.println(current);
-        return current.toString();
+
     }
 
     // command: > - overrides file's content and creates new one if doesn't exist
     public void Override(String content, String outputFile) {
         Path file = Paths.get(outputFile);
 
-        // Check if the path is valid and exists
+
+        // file at first level or the parent is invalid
         if (file.getParent() != null && !Files.exists(file.getParent())) {
             System.out.println("Invalid path!");
             return;
         }
 
-        // Write to the file
+        // Write to the file  // will fail if directory to directory
         try (BufferedWriter writer = Files.newBufferedWriter(file)) {
             writer.write(content);
         } catch (IOException e) {
