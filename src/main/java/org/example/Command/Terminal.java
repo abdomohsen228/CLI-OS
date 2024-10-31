@@ -64,7 +64,6 @@ public class Terminal {
             System.out.println("Invalid Command Arguments!");
         }
     }
-
     // Command 2: changes the current directory
     public void cd(String[] args) {
         if (args.length == 0) {
@@ -105,9 +104,6 @@ public class Terminal {
             System.out.println("Invalid Command Arguments!");
         }
     }
-
-
-
     // Command 3: creates a new file in a given path
     public void touch(String[] input) {
         if (input.length != 1) {
@@ -156,8 +152,6 @@ public class Terminal {
             System.out.println("An error occurred: " + e.getMessage());
         }
     }
-
-
     // Command 4: list the history of the commands
     public void history(ArrayList<String> arr) {
         for (int i = 0; i < arr.size(); i++) {
@@ -181,7 +175,6 @@ public class Terminal {
             }
         }
     }
-
     // Command: rmdir - removes empty directories
     public void rmdir(String[] args) {
         if (args.length == 0) {
@@ -203,7 +196,6 @@ public class Terminal {
             }
         }
     }
-
     // Command: rm - removes files
     public void rm(String[] args) {
         if (args.length == 0) {
@@ -223,9 +215,8 @@ public class Terminal {
             }
         }
     }
-
     // Command: cat - displays or creates files
-public void cat(String[] args) {
+    public void cat(String[] args) {
         if (args.length == 0) {
             System.out.println("Usage: cat <file_name> [> or >> output_file]");
             return;
@@ -314,7 +305,6 @@ public void cat(String[] args) {
         System.out.println(current);
 
     }
-
     // command: > - overrides file's content and creates new one if doesn't exist
     public void Override(String content, String outputFile) {
         Path file = Paths.get(outputFile);
@@ -333,7 +323,6 @@ public void cat(String[] args) {
             System.out.println("An error occurred while writing to the file: " + e.getMessage());
         }
     }
-
     // command: >> - appends the current content to a new file
     public void Append(String content , String outputFile )
     {
@@ -353,7 +342,6 @@ public void cat(String[] args) {
             System.out.println("An error occurred while writing to the file: " + e.getMessage());
         }
     }
-
     public void mv(String sourcePath, String destinationPath) {
         File sourceFile = new File(currentDirectory, sourcePath);
         File destinationFile = new File(currentDirectory, destinationPath);
@@ -381,6 +369,7 @@ public void cat(String[] args) {
             System.out.println("Error moving/renaming file: " + e.getMessage());
         }
     }
+
 
 }
 
