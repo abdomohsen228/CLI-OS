@@ -67,127 +67,96 @@ public class Terminal {
 
     // Command 2: changes the current directory
     public void cd(String[] args) {
-        // cd to home directory
         if (args.length == 0) {
-            // check if the user is in the home directory
-            if (currentDirectory.getAbsolutePath().equals(System.getProperty("user.home"))) {
+            String userHome = System.getProperty("user.home");
+            if (currentDirectory.getAbsolutePath().equals(userHome)) {
                 System.out.println("You are already in the home directory!");
             } else {
-                // Change the current directory to the user's home directory
-                String userHome = System.getProperty("user.home");
                 System.setProperty("user.dir", userHome);
                 currentDirectory = new File(userHome);
                 System.out.println("Current Directory: " + currentDirectory.getAbsolutePath());
             }
         }
 
-        // cd to parent directory
-        else if (args[0].equals("..") && args.length == 1) {
-            // Change the current directory to the parent directory
+        else if (args.length == 1 && args[0].equals("..")) {
             File parentDirectory = currentDirectory.getParentFile();
-            // check that we don't stand at the root directory
             if (parentDirectory != null) {
                 System.setProperty("user.dir", parentDirectory.getAbsolutePath());
                 currentDirectory = parentDirectory;
+                System.out.println("Current Directory: " + currentDirectory.getAbsolutePath());
             } else {
                 System.out.println("You are already in the root directory!");
             }
-            System.out.println("Current Directory: " + currentDirectory.getAbsolutePath());
         }
 
-        // cd to relative or full path
         else if (args.length == 1) {
-            // check if the path exists
-            File file = new File(args[0]);
-            if (!file.exists()) {
-                System.out.println("Path doesn't exits!");
+            File targetDirectory = args[0].contains(":") ? new File(args[0]) : new File(currentDirectory, args[0]);
+            if (!targetDirectory.exists()) {
+                System.out.println("Path doesn't exist!");
+            } else if (!targetDirectory.isDirectory()) {
+                System.out.println("The specified path is not a directory!");
             } else {
-                // Change the current directory to the given path
-                System.setProperty("user.dir", args[0]);
-                currentDirectory = new File(System.getProperty("user.dir"));
+                System.setProperty("user.dir", targetDirectory.getAbsolutePath());
+                currentDirectory = targetDirectory;
                 System.out.println("Current Directory: " + currentDirectory.getAbsolutePath());
             }
         }
-        // another invalid command argument
         else {
             System.out.println("Invalid Command Arguments!");
         }
     }
+
+
+
     // Command 3: creates a new file in a given path
     public void touch(String[] input) {
-        // touch create absolute path
-        if (input.length == 1 && input[0].contains(":")) {
-            // parse the path into the file name and the absolute path
+        if (input.length != 1) {
+            System.out.println("Invalid Command Arguments!");
+            return;
+        }
+        File file;
+        if (input[0].contains(":")) {
             String fileName = input[0].substring(input[0].lastIndexOf("\\") + 1);
             String filePath = input[0].substring(0, input[0].lastIndexOf("\\"));
-            // check if the path exists
-            File file = new File(filePath);
-            if (!file.exists()) {
-                System.out.println("Path doesn't exits!");
-            } else {
-                // add the file to the given path
-                file = new File(filePath, fileName);
-                try {
-                    // check if the file is already created
-                    boolean isCreated = file.createNewFile();
-                    if (isCreated) {
-                        System.out.println("File created successfully!");
-                    } else {
-                        System.out.println("File already exists!");
-                    }
-                } catch (IOException e) {
-                    System.out.println("Error occurred!");
-                }
+            File directory = new File(filePath);
+
+            if (!directory.exists() || !directory.isDirectory()) {
+                System.out.println("Path doesn't exist or is not a directory!");
+                return;
             }
+
+            file = new File(directory, fileName);
         }
-        // touch create relative path
-        else if (input.length == 1 && input[0].contains("\\")) {
-            String relativePath = input[0];
-            File file = new File(relativePath);
+
+        else if (input[0].contains("\\")) {
+            file = new File(currentDirectory, input[0]);
             File parentDirectory = file.getParentFile();
-            // check if the directory exists
-            if (!parentDirectory.exists()) {
+
+            if (parentDirectory != null && !parentDirectory.exists()) {
                 boolean created = parentDirectory.mkdirs();
                 if (created) {
                     System.out.println("Directory created successfully!");
                 } else {
-                    System.out.println("Error occurred!");
+                    System.out.println("Failed to create the directory!");
+                    return;
                 }
-            }
-            try {
-                // check if the file is already created
-                boolean isCreated = file.createNewFile();
-                if (isCreated) {
-                    System.out.println("File created successfully!");
-                } else {
-                    System.out.println("File already exists!");
-                }
-            } catch (IOException e) {
-                System.out.println("Error occurred!");
             }
         }
-        // touch create file in the current directory
-        else if (input.length == 1 && !input[0].contains("\\")) {
-            String fileName = input[0];
-            // create the file in the current directory
-            File file = new File(currentDirectory, fileName);
-            try {
-                // check if the file is already created
-                boolean isCreated = file.createNewFile();
-                if (isCreated) {
-                    System.out.println("File created successfully!");
-                } else {
-                    System.out.println("File already exists!");
-                }
-            } catch (IOException e) {
-                System.out.println("Error occurred!");
-            }
-        }
-        // Handle invalid command arguments
         else {
-            System.out.println("Invalid Command Arguments!");
+            file = new File(currentDirectory, input[0]);
+        }
+        try {
+            if (file.exists()) {
+                System.out.println("File already exists!");
+            } else {
+                boolean isCreated = file.createNewFile();
+                System.out.println(isCreated ? "File created successfully!" : "File already exists!");
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred: " + e.getMessage());
         }
     }
+
 
     // Command 4: list the history of the commands
     public void history(ArrayList<String> arr) {
