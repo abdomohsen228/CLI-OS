@@ -1,6 +1,5 @@
 package org.example;
 import org.example.Menu.Interface;
-
 import java.io.IOException;
 
 public class Main {
