@@ -12,6 +12,7 @@ public class Parser {
         Map<String, Boolean> validCommands = Map.ofEntries(
                 Map.entry("ls", true),
                 Map.entry("ls -r", true),
+                Map.entry("ls -a", true),
                 Map.entry("cd", true),
                 Map.entry("touch", true),
                 Map.entry("history", true),
@@ -24,7 +25,8 @@ public class Parser {
                 Map.entry("cp -r", true),
                 Map.entry("rm", true),
                 Map.entry("cat", true),
-                Map.entry("wc", true)
+                Map.entry("wc", true),
+                Map.entry("mv", true)
         );
         return validCommands.containsKey(command);
     }
@@ -37,14 +39,13 @@ public class Parser {
         args = input.split("\\s+");
         commandName = args[0];
 
-        // handling "cp -r" and "ls -r" command
-        if ((commandName.equals("cp") || commandName.equals("ls")) && args.length >= 2 && args[1].equals("-r")) {
-            commandName += " -r";
+        // handling "cp -r", "ls -r", and "ls -a" commands
+        if ((commandName.equals("cp") || commandName.equals("ls")) && args.length >= 2 && (args[1].equals("-r") || args[1].equals("-a"))) {
+            commandName += " " + args[1];
             // remove the first two arguments from the list
             args = Arrays.copyOfRange(args, 2, args.length);
         } else if (commandName.equals("pwd") && args.length >= 2 && (args[1].equals("-L")||args[1].equals("-P"))) {
-            commandName += " ";
-            commandName += args[1];
+            commandName += " " + args[1];
             // remove the first two arguments from the list
             args = Arrays.copyOfRange(args, 2, args.length);
         } else {

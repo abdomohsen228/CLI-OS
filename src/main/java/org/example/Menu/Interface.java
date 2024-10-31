@@ -73,8 +73,13 @@ public class Interface {
         String[] args = parserObject.getArgs(input);
         switch (commandName) {
             case "mv":
-//                terminal.mv(args);
+                if (args.length == 2) {  // Ensure there are exactly 2 arguments for the mv command
+                    terminal.mv(args[0], args[1]);
+                } else {
+                    System.out.println("Invalid arguments for mv command!");
+                }
                 break;
+
             case "pwd":
             case "pwd -L":
             case "pwd -P":
@@ -85,6 +90,7 @@ public class Interface {
                 break;
             case "ls":
             case "ls -r":
+            case "ls -a":
                 terminal.ls(commandName, args);
                 break;
             case "touch":

@@ -1,9 +1,6 @@
 package org.example.Command;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,21 +27,38 @@ public class Terminal {
             System.out.println("Directory is Empty!");
             return;
         }
-        // sort the files in alphabetical order
+
+        // Handle "ls" without any options (only visible files)
         if (command.equals("ls") && input.length == 0) {
             Arrays.sort(files);
             for (File file : files) {
-                System.out.println(file.getName());
+                if (!file.isHidden()) {  // Skip hidden files
+                    System.out.println(file.getName());
+                }
             }
         }
-        // sort the files in reversed order
+
+        // Handle "ls -r" (only visible files in reverse order)
         else if (command.equals("ls -r") && input.length == 0) {
             Arrays.sort(files);
             Collections.reverse(Arrays.asList(files));
             for (File file : files) {
-                System.out.println(file.getName());
+                if (!file.isHidden()) {  // Skip hidden files
+                    System.out.println(file.getName());
+                }
             }
-        } else {
+        }
+
+        // Handle "ls -a" (all files, including hidden ones)
+        else if (command.equals("ls -a") && input.length == 0) {
+            Arrays.sort(files);
+            for (File file : files) {
+                System.out.println(file.getName());  // Include hidden files
+            }
+        }
+
+        // If the command doesn't match any known pattern
+        else {
             System.out.println("Invalid Command Arguments!");
         }
     }
@@ -369,6 +383,29 @@ public void cat(String[] args) {
         }
     }
 
+    public void mv(String sourcePath, String destinationPath) {
+        File sourceFile = new File(currentDirectory, sourcePath);
+        File destinationFile = new File(currentDirectory, destinationPath);
+
+        // Check if source file exists
+        if (!sourceFile.exists()) {
+            System.out.println("Source file or directory does not exist!");
+            return;
+        }
+
+        // Check if the destination is a directory; if so, move the file into the directory.
+        if (destinationFile.isDirectory()) {
+            destinationFile = new File(destinationFile, sourceFile.getName());
+        }
+
+        // Move or rename the file
+        try {
+            Files.move(sourceFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("Moved/Renamed " + sourceFile.getName() + " to " + destinationFile.getPath());
+        } catch (IOException e) {
+            System.out.println("Error moving/renaming file: " + e.getMessage());
+        }
+    }
 
 }
 
