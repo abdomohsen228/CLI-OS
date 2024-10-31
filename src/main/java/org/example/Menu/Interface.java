@@ -108,15 +108,6 @@ public class Interface {
             case "cat":
                 terminal.cat(args);
                 break;
-            case "wc":
-//                terminal.wc(args);
-                break;
-            case "cp":
-//                Terminal.cp(args);
-                break;
-            case "cp -r":
-//                Terminal.cp_r(args);
-                break;
             case "rm":
                 terminal.rm(args);
                 break;
