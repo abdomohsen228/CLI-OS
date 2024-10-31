@@ -398,7 +398,11 @@ public void cat(String[] args) {
         // Check if the destination is a directory; if so, move the file into the directory.
         if (destinationFile.isDirectory()) {
             destinationFile = new File(destinationFile, sourceFile.getName());
+        } else if (!destinationFile.exists()) {
+            // If the destination does not exist and is not a directory, rename the file.
+            destinationFile = new File(destinationPath);
         }
+
 
         // Move or rename the file
         try {
