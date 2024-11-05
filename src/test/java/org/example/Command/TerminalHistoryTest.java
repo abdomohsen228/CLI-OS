@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TerminalHistoryTest {
 
     private Terminal terminal;
-    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream(); // to test System.out.print
     private final PrintStream originalOut = System.out;
 
     @BeforeEach
