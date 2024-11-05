@@ -53,9 +53,7 @@ public class Interface {
                         "13. >  \n" +
                         "    - Redirects output of a command to a file, overwriting the file if it exists.\n" +
                         "14. >>  \n" +
-                        "    - Redirects output of a command to a file, appending to the file if it exists.\n" +
-                        "15. |  \n" +
-                        "    - Pipes output of one command as input to another command, allowing chaining of commands.\n");
+                        "    - Redirects output of a command to a file, appending to the file if it exists.\n" );
                 continue;
             }
             parserObject.getArgs(input);
