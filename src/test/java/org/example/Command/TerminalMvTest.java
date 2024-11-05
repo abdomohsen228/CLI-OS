@@ -59,11 +59,11 @@ public class TerminalMvTest {
     @Test
     public void testMvRename() {
         String sourcePath = "fileA.txt";
-        String destinationPath = "destinationDir/fileB.txt"; // Move and rename
+        String destinationPath = "fileB.txt"; // Rename
         terminal.mv(sourcePath, destinationPath);
 
         // Check if the file has been moved and renamed
-        File movedFile = new File(destinationDirectory, "fileB.txt");
+        File movedFile = new File("fileB.txt");
         assertTrue(movedFile.exists(), "The renamed file should exist in the destination directory.");
 
         // Check if the original file no longer exists

@@ -33,7 +33,7 @@ public class Terminal {
             Arrays.sort(files);
             for (File file : files) {
                 // Exclude hidden files by checking if the file name starts with a dot
-                if (!file.getName().startsWith(".")) {
+                if (!file.getName().startsWith(".") && !file.isHidden()) {
                     System.out.println(file.getName());
                 }
             }
@@ -45,7 +45,7 @@ public class Terminal {
             Collections.reverse(Arrays.asList(files));
             for (File file : files) {
                 // Exclude hidden files by checking if the file name starts with a dot
-                if (!file.getName().startsWith(".")) {
+                if (!file.getName().startsWith(".") && !file.isHidden()) {
                     System.out.println(file.getName());
                 }
             }
